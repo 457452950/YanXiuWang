@@ -131,7 +131,7 @@ class StateMachine:
                 return
             pyautogui.click(pos.left + 28, pos.top + 25)
             print("点击播放按钮, pos : ", pos.left, pos.top)
-            self.__time_out_s = 125
+            self.__time_out_s = 145
             return
 
         if self.__state == State.ClassPage_Over:
