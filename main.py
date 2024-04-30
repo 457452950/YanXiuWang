@@ -2,7 +2,7 @@ import os
 
 import cv2
 
-import State
+import StateMachine
 
 
 def debug_info():
@@ -13,5 +13,11 @@ def debug_info():
 # main
 if __name__ == "__main__":
     debug_info()
-    loop = State.StateMachine()
-    loop.run()
+
+    # 已验证
+    # loop = State.StateMachine()
+    # loop.run()
+
+    # or
+    ser = StateMachine.Service()
+    ser.run()

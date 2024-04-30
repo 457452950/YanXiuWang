@@ -1,29 +1,10 @@
-import enum
-import os
 import time
-import cv2
-import numpy as np
+from typing import Callable
+
 import pyautogui
 
-class_page_tag_img_path = os.getcwd() + "\\resource\\class_page_tag.png"
-enter_img_path = os.getcwd() + "\\resource\\enter.png"
-enter_tag_img_path = os.getcwd() + "\\resource\\enter_tag.png"
-
-class_tag_img_path = os.getcwd() + "\\resource\\class_tag.png"
-class_start_btn_img_path = os.getcwd() + "\\resource\\class_start_btn.png"
-class_complete_btn_img_path = os.getcwd() + "\\resource\\complete.png"
-class_processing_btn_img_path = os.getcwd() + "\\resource\\processing.png"
-
-play_img_path = os.getcwd() + "\\resource\\play.png"
-pause_img_path = os.getcwd() + "\\resource\\pause.png"
-close_img_path = os.getcwd() + "\\resource\\close.png"
-
-
-class State(enum.Enum):
-    UnKnown = 0
-    ClassListPage = 1
-    ClassPage_Playing = 2
-    ClassPage_Over = 3
+import service
+from config import *
 
 
 # 状态机
@@ -147,3 +128,40 @@ class StateMachine:
             self.__time_out_s = 5
 
         pass
+
+
+type Handler = Callable[[], tuple[State, float]]
+
+
+class ScriptStateMachine:
+    def __init__(self):
+        self.__active = True
+        self.__state_handlers = {}
+
+    def register(self, state: State, handler: Handler):
+        self.__state_handlers[state] = handler
+        pass
+
+    def run(self, state: State):
+        while self.__active:
+            next_state, time_out = self.__state_handlers[state]()
+            pyautogui.sleep(time_out)
+            state = next_state
+
+    def close(self):
+        self.__active = False
+
+
+class Service:
+    def __init__(self):
+        self.__state_machine = ScriptStateMachine()
+        self.__state_machine.register(State.UnKnown, service.service_unknown)
+        self.__state_machine.register(State.ClassListPage, service.service_class_list)
+        self.__state_machine.register(State.ClassPage_Playing, service.service_class_playing)
+        self.__state_machine.register(State.ClassPage_Over, service.service_class_over)
+
+    def run(self):
+        self.__state_machine.run(State.UnKnown)
+
+    def close(self):
+        self.__state_machine.close()
