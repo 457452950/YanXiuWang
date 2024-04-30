@@ -76,8 +76,8 @@ class StateMachine:
             # 检查是否有未播放视频
             ppos = pyautogui.locateOnScreen(class_start_btn_img_path, confidence=0.8)
             if ppos is not None:
-                pyautogui.click(ppos.left + 20, ppos.top)
-                print("点击下一课 pos : ", ppos.top, ppos.left, ppos.width, ppos.height)
+                pyautogui.click(ppos.left + 60, ppos.top)
+                print("点击下一课 pos : ", ppos.left, ppos.top, ppos.width, ppos.height)
                 self.__time_out_s = 0.1
                 self.__state = State.ClassPage_Playing
                 print("next, state is class page playing")
@@ -115,7 +115,7 @@ class StateMachine:
             pos = pyautogui.locateOnScreen(pause_img_path, confidence=0.8)
             if pos is not None:
                 print("is playing")
-                pyautogui.moveTo(pos.left, pos.top)
+                pyautogui.moveTo(pos.left + 70, pos.top + 25)
                 self.__time_out_s = 5
                 return
             pos = pyautogui.locateOnScreen(play_img_path, confidence=0.9)
@@ -127,11 +127,11 @@ class StateMachine:
                     return
                 pyautogui.moveTo(pos.left + 150, pos.top + 500)
                 print("wait for next time")
-                self.__time_out_s = 2
+                self.__time_out_s = 0.7
                 return
-            pyautogui.click(pos.left, pos.top)
+            pyautogui.click(pos.left + 28, pos.top + 25)
             print("点击播放按钮, pos : ", pos.left, pos.top)
-            self.__time_out_s = 20
+            self.__time_out_s = 125
             return
 
         if self.__state == State.ClassPage_Over:
